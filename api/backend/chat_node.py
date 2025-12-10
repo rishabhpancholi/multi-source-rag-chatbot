@@ -2,17 +2,17 @@
 from typing import TypedDict,Annotated
 
 from langchain_groq import ChatGroq
-from langchain_core.messages import BaseMessage,AIMessage,SystemMessage
-from langchain_core.output_parsers import StrOutputParser
+from langchain_core.messages import BaseMessage,SystemMessage
 
 from langgraph.graph.message import add_messages
 
 from .config import app_config
+from .retrieval_node import retrieval_tool
 
 
 # Chat model
 llm =  ChatGroq(
-    model = "llama-3.1-8b-instant",
+    model = "openai/gpt-oss-20b",
     api_key = app_config.groq_api_key
 )
 
@@ -24,26 +24,24 @@ class ChatState(TypedDict):
 # Chat node
 def chat_node(state: ChatState)-> ChatState:
     system_prompt = SystemMessage(
-        content = """
+        content = f"""
           You are a helpful assistant.
-          You are a multi source RAG chatbot.
-          If user asks query which requires 
-          retrieval from a knowledge base, 
-          you can use the tools provided to you 
-          to retrieve the knowledge.
-          If the query doesnt require retrieval,
-          just answer normally without retrieval.
-          If even after retrieval you are not sure
-          you can say i dont know. Do not make up 
+          You are a multi source RAG(Retrieval Augmented Generation) chatbot.
+          If the query doesn't require retrieval,just answer normally without retrieval.
+          If user asks query which requires retrieval of document string from 
+          a knowledge base(vector database), you can use the tool `retrieval_tool` 
+          provided to you to retrieve the knowledge.
+          If even after retrieval you are not sure you can say i dont know. Do not make up 
           answers on yourself.
+          The session_id for the chat is {state["session_id"]}.
     """
     )
     messages = [system_prompt] + state["messages"]
-    chat_model = llm | StrOutputParser()
-    response = chat_model.invoke(
+    rag_model = llm.bind_tools([retrieval_tool])
+    response = rag_model.invoke(
         messages
     )
     return {
-        "messages": [AIMessage(content = response)],
+        "messages": [response],
         "session_id": state["session_id"]
     }

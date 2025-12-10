@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings,SettingsConfigDict
 # Config class
 class Config(BaseSettings):
     groq_api_key: str
+    voyage_api_key: str
     postgres_user: str
     postgres_db: str
     postgres_password: str

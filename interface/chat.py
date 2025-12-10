@@ -2,8 +2,12 @@
 import requests
 import streamlit as st
 
+from upload import upload_file
+
 # Chat interface
 def chat()-> None:
+    upload_file()
+
     for message in st.session_state["previous_session_messages"]:
         with st.chat_message(name = message["role"]):
             st.markdown(message["content"])
@@ -16,25 +20,26 @@ def chat()-> None:
     if query:
         with st.chat_message(name = "human"):
             st.markdown(query)
-        response = requests.post(
-                    url = "http://localhost:8000/respond",
-                    json = {
-                        "query": query,
-                        "session_id": st.session_state["session_id"]
-                    }
-            )
+        with st.spinner("Generating response..."):
+            response = requests.post(
+                        url = "http://localhost:8000/respond",
+                        json = {
+                            "query": query,
+                            "session_id": st.session_state["session_id"]
+                        }
+                )
         if response.status_code != 200:
             st.error("Error fetching response. Please try again later.")
         else:
-            response = response.json()["response"]
+            response_msg = response.json()["response"]
             st.session_state["messages"].extend(
                 [
                     {"role": "human", "content": query},
-                    {"role": "assistant", "content": response}
+                    {"role": "assistant", "content": response_msg}
                 ]
             )
             with st.chat_message(name = "assistant"):
-                st.markdown(response)
+                st.markdown(response_msg)
                
 
             

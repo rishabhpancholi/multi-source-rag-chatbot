@@ -27,7 +27,8 @@ if not st.session_state.logged_in:
         if submitted:
             st.session_state["logged_in"] = True
             st.session_state["session_id"] = username
-            st.session_state["previous_session_messages"] = get_chat_history(st.session_state.session_id)
+            with st.spinner("Loading chat history..."):
+                st.session_state["previous_session_messages"] = get_chat_history(username)
             st.rerun()
 else:
     chat()

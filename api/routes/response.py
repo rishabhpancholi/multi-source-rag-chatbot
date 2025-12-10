@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter, HTTPException
 
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage,AIMessage
 
 from api.backend import chatbot
 
@@ -33,6 +33,9 @@ def respond(input: ChatInput)-> JSONResponse:
             config = config
         )
 
-        return JSONResponse({"response": response["messages"][-1].content})
+        messages = response["messages"]
+        return JSONResponse({
+            "response": messages[-1].content,
+        })
     except Exception as e:
         raise HTTPException(status_code = 500, detail = f"{str(e)}")
