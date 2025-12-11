@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter, HTTPException
 
-from langchain_core.messages import HumanMessage,AIMessage
+from langchain_core.messages import HumanMessage
 
 from api.backend import chatbot
 

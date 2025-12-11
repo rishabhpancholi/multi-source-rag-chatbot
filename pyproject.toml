@@ -10,6 +10,7 @@ dependencies = [
     "langchain-core>=1.1.1",
     "langchain-groq>=1.1.0",
     "langchain-qdrant>=1.1.0",
+    "langchain-tavily>=0.2.13",
     "langchain-text-splitters>=1.0.0",
     "langchain-voyageai>=0.3.0",
     "langgraph>=1.0.4",

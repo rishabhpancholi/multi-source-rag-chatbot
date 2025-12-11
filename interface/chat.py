@@ -3,10 +3,12 @@ import requests
 import streamlit as st
 
 from upload import upload_file
+from codebase import codebase_knowledge
 
 # Chat interface
 def chat()-> None:
     upload_file()
+    codebase_knowledge()
 
     for message in st.session_state["previous_session_messages"]:
         with st.chat_message(name = message["role"]):

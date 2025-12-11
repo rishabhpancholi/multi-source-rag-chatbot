@@ -1,23 +1,14 @@
 # Imports
 from langchain_core.tools import tool
-from langchain_qdrant.qdrant import QdrantVectorStore, QdrantVectorStoreError
 from langchain_voyageai.embeddings import VoyageAIEmbeddings
+from langchain_qdrant.qdrant import QdrantVectorStore, QdrantVectorStoreError
 
 from langgraph.prebuilt import ToolNode
 
 from .config import app_config
 
 @tool("retriever", description="A tool which retrieves data from a vector store and returns context as a string.")
-def retrieval_tool(input: dict) -> str:
-    """
-    input = {
-        "query": str,
-        "session_id": str
-    }
-    """
-    query = input["query"]
-    session_id = input["session_id"]
-
+def retrieval_tool(query: str, session_id: str) -> str:
     embeddings = VoyageAIEmbeddings(
         api_key = app_config.voyage_api_key,
         model = "voyage-3-large"
@@ -36,6 +27,5 @@ def retrieval_tool(input: dict) -> str:
 
     except QdrantVectorStoreError as e:
         return f"Error retrieving data from vector store: {str(e)}"
-
 
 tool_node = ToolNode(tools = [retrieval_tool])

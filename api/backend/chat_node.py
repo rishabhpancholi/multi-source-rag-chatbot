@@ -34,6 +34,16 @@ def chat_node(state: ChatState)-> ChatState:
           If even after retrieval you are not sure you can say i dont know. Do not make up 
           answers on yourself.
           The session_id for the chat is {state["session_id"]}.
+          The `retrieval_tool` takes two fixed arguments "query" and "session_id".
+          Inside query there will be the user's query.
+          Inside session_id there will be the session_id for the chat.
+          Strictly follow this while calling the tool otherwise tool call will fail!!!
+          For example:
+          The tool call will be like:
+          ```
+          retrieval_tool(query, session_id)
+          ```
+          You also have a search tool called the `search_tool`.
     """
     )
     messages = [system_prompt] + state["messages"]

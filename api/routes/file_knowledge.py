@@ -39,7 +39,7 @@ async def create_file_knowledge(session_id: str, file: UploadFile = File(...))->
             loader = LOADERS[file_extension](tmp_path)
             docs = loader.load()
 
-            create_knowledge(docs, session_id)
+            create_knowledge(docs, session_id, type = "text")
 
         return JSONResponse({"message": "File knowledge created successfully"})
 

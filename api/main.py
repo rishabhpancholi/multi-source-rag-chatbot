@@ -5,7 +5,8 @@ from api.routes import (
     home_router,
     response_router,
     history_router,
-    knowledge_router
+    knowledge_router,
+    codebase_knowledge_router
 )
 
 # Initialize app
@@ -16,7 +17,8 @@ routes = [
     home_router,
     response_router,
     history_router,
-    knowledge_router
+    knowledge_router,
+    codebase_knowledge_router
 ]
 for route in routes:
     app.include_router(route)

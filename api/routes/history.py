@@ -33,5 +33,5 @@ def get_history(session_id: str)-> JSONResponse:
                 )
 
         return JSONResponse({"history": message_list})
-    except Exception as e:
-        raise HTTPException(status_code = 500, detail = f"{str(e)}")
+    except Exception:
+        raise HTTPException(status_code = 500, detail = "Internal Server Error")

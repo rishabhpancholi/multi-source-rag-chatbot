@@ -8,6 +8,8 @@ class Config(BaseSettings):
     postgres_user: str
     postgres_db: str
     postgres_password: str
+    github_api_url: str
+    github_personal_access_token: str
 
     model_config = SettingsConfigDict(env_file = ".env")
 
