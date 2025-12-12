@@ -10,6 +10,7 @@ __pycache__/
 # Virtual environments (if any)
 .venv/
 venv/
+.venv_corrupt
 
 # OS junk
 .DS_Store

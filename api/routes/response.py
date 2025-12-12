@@ -1,12 +1,14 @@
 # Imports
 from pydantic import BaseModel
 
+from langsmith import tracing_context
+
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter, HTTPException
 
 from langchain_core.messages import HumanMessage
 
-from api.backend import chatbot
+from api.backend import chatbot,langsmith_client
 
 # Input model
 class ChatInput(BaseModel):
@@ -23,15 +25,25 @@ def respond(input: ChatInput)-> JSONResponse:
         config = {
             "configurable": {
                 "thread_id": input.session_id
-            }
-        }
-        response = chatbot.invoke(
-            {
-                "session_id": input.session_id,
-                "messages": [HumanMessage(content = input.query)]
             },
-            config = config
-        )
+            "metadata":{
+                "thread_id": input.session_id
+            },
+            "run_name": "agentic-rag-chatbot"
+        }
+
+        with tracing_context(
+            enabled = True,
+            client = langsmith_client,
+            project_name = "agentic-rag-chatbot"
+        ):
+            response = chatbot.invoke(
+                {
+                    "session_id": input.session_id,
+                    "messages": [HumanMessage(content = input.query)]
+                },
+                config = config
+            )
 
         messages = response["messages"]
         return JSONResponse({

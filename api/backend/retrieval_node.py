@@ -7,8 +7,15 @@ from langgraph.prebuilt import ToolNode
 
 from .config import app_config
 
-@tool("retriever", description="A tool which retrieves data from a vector store and returns context as a string.")
+@tool("retriever")
 def retrieval_tool(query: str, session_id: str) -> str:
+    """
+    Takes user query ('query') and chat session id ('session_id') as input and returns context as a string after retrieving data from Qdrant vector store.
+
+    Args:
+       query: User's query string
+       session_id: Chat session id string
+    """
     embeddings = VoyageAIEmbeddings(
         api_key = app_config.voyage_api_key,
         model = "voyage-3-large"
@@ -21,7 +28,7 @@ def retrieval_tool(query: str, session_id: str) -> str:
             url="http://localhost:6333"
         )
 
-        relevant_docs = vector_store.similarity_search(query)
+        relevant_docs = vector_store.similarity_search(query, k = 3)
         context = "\n".join([doc.page_content for doc in relevant_docs])
         return context
 

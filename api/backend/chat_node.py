@@ -27,23 +27,17 @@ def chat_node(state: ChatState)-> ChatState:
         content = f"""
           You are a helpful assistant.
           You are a multi source RAG(Retrieval Augmented Generation) chatbot.
-          If the query doesn't require retrieval,just answer normally without retrieval.
-          If user asks query which requires retrieval of document string from 
-          a knowledge base(vector database), you can use the tool `retrieval_tool` 
-          provided to you to retrieve the knowledge.
-          If even after retrieval you are not sure you can say i dont know. Do not make up 
-          answers on yourself.
+          Always give a short intro when user asks for it.
+          You have access to a Qdrant vector database for retrieving knowledge through a
+          tool called `retrieval_tool`. 
+          When the user explicitly asks who/what you are, give a short intro.
+          Use retrieval only when the user explicitly asks for knowledge from the stored documents, 
+          or when the response requires factual details unlikely to be in your general model knowledge.
+          If even after retrieval you are not sure you can just say 'I dont know'. Do not make up 
+          answers by yourself.
           The session_id for the chat is {state["session_id"]}.
-          The `retrieval_tool` takes two fixed arguments "query" and "session_id".
-          Inside query there will be the user's query.
-          Inside session_id there will be the session_id for the chat.
-          Strictly follow this while calling the tool otherwise tool call will fail!!!
-          For example:
-          The tool call will be like:
-          ```
-          retrieval_tool(query, session_id)
-          ```
-          You also have a search tool called the `search_tool`.
+          Always call the tool with the correct arguments which are mentioned in the tool description.
+          
     """
     )
     messages = [system_prompt] + state["messages"]

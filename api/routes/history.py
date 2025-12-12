@@ -19,18 +19,19 @@ def get_history(session_id: str)-> JSONResponse:
             }
         }
         history = chatbot.get_state(config)
-        messages = history.values["messages"]
 
         message_list = []
-        for message in messages:
-            if isinstance(message, AIMessage):
-                message_list.append(
-                    {"role": "assistant", "content": message.content}
-                )
-            elif isinstance(message, HumanMessage):
-                message_list.append(
-                    {"role": "human", "content": message.content}
-                )
+        if "messages" in history.values:
+            messages = history.values["messages"]
+            for message in messages:
+                if isinstance(message, AIMessage):
+                    message_list.append(
+                        {"role": "assistant", "content": message.content}
+                    )
+                elif isinstance(message, HumanMessage):
+                    message_list.append(
+                        {"role": "human", "content": message.content}
+                    )
 
         return JSONResponse({"history": message_list})
     except Exception:

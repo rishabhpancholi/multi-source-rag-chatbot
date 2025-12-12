@@ -1,4 +1,6 @@
 # Imports
+from langsmith import traceable
+
 from langchain_core.documents import Document
 from langchain_voyageai.embeddings import VoyageAIEmbeddings
 from langchain_qdrant.qdrant import QdrantVectorStore, QdrantVectorStoreError
@@ -7,6 +9,7 @@ from langchain_text_splitters.character import RecursiveCharacterTextSplitter, L
 from .config import app_config
 
 # PDF knowledge
+@traceable(name = "agentic_rag_chatbot")
 def create_knowledge(docs: list[Document], session_id: str, type: str)-> None:
     try:
         text_splitter = RecursiveCharacterTextSplitter(chunk_size = 500, chunk_overlap = 50)
