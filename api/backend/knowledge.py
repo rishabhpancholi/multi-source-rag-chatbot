@@ -46,7 +46,8 @@ def create_knowledge(docs: list[Document], session_id: str, type: str)-> None:
             documents = chunks,
             embedding = embeddings,
             collection_name = session_id,
-            url = "http://localhost:6333"
+            url = app_config.qdrant_url,
+            api_key = app_config.qdrant_api_key
         )
     except QdrantVectorStoreError as e:
         raise Exception(f"Error creating knowledge: {str(e)}")

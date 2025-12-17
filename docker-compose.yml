@@ -1,17 +1,41 @@
 services:
   postgres_db:
-    image: postgres
+    container_name: postgres_db
+    image: postgres:latest
     ports:
       - "5432:5432"
-    env_file:
-      - .env
     volumes:
       - postgres_data:/var/lib/postgresql
+    env_file:
+      - .env
+    networks:
+      - agentic-rag-backend
 
-  adminer:
-    image: adminer
+  qdrant:
+    container_name: qdrant
+    image: qdrant/qdrant:latest
     ports:
-      - "8080:8080"
+      - "6333:6333"
+    env_file:
+      - .env
+    networks:
+      - agentic-rag-backend
+
+  agentic-rag-chatbot:
+    container_name: agentic-rag-chatbot
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres_db
+      - qdrant
+    networks:
+      - agentic-rag-backend
+
+networks:
+  agentic-rag-backend:
 
 volumes:
   postgres_data:

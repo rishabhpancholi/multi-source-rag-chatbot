@@ -23,7 +23,7 @@ def codebase_knowledge():
                     progress_bar.progress(i + 1, text = "Generating knowledge from file...")
                 try:
                     response = requests.post(
-                        "http://localhost:8000/codebase_knowledge",
+                        f"{st.session_state['backend_url']}/codebase_knowledge",
                         json = {
                             "repo_name": repo_name,
                             "repo_branch": repo_branch,

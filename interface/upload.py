@@ -23,7 +23,7 @@ def upload_file():
 
             try:
                 response = requests.post(
-                    "http://localhost:8000/file_knowledge",
+                    f"{st.session_state['backend_url']}/file_knowledge",
                     params = {
                         "session_id": st.session_state["session_id"],
                     },

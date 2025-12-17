@@ -8,6 +8,8 @@ from chat_history import get_chat_history
 st.sidebar.title("Multi Source RAG Chatbot")
 
 # Initialize session state
+if "backend_url" not in st.session_state:
+    st.session_state["backend_url"] = "http://localhost:8000"
 if "logged_in" not in st.session_state:
     st.session_state["logged_in"] = False
 if "session_id" not in st.session_state:

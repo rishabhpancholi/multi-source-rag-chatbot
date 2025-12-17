@@ -36,6 +36,7 @@ def chat_node(state: ChatState)-> ChatState:
           If even after retrieval you are not sure you can just say 'I dont know'. Do not make up 
           answers by yourself.
           The session_id for the chat is {state["session_id"]}.
+          Do not mention the session_id unless the user explicitly asks for it.
           Always call the tool with the correct arguments which are mentioned in the tool description.
           
     """

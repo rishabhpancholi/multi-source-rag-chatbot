@@ -6,7 +6,7 @@ from langsmith import tracing_context
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter, HTTPException
 
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, AIMessage
 
 from api.backend import chatbot,langsmith_client
 
@@ -45,9 +45,20 @@ def respond(input: ChatInput)-> JSONResponse:
                 config = config
             )
 
+        response_messages = []
+
         messages = response["messages"]
+        for message in messages:
+            if isinstance(message, AIMessage):
+                response_messages.append(
+                    {
+                        "role": "assistant",
+                        "content": message.content
+                    }
+                )
+                
         return JSONResponse({
-            "response": messages[-1].content,
+            "response": response_messages
         })
     except Exception as e:
         raise HTTPException(status_code = 500, detail = f"{str(e)}")

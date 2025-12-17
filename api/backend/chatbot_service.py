@@ -10,7 +10,7 @@ from .retrieval_node import tool_node
 from .chat_node import ChatState,chat_node
 
 # Postgres connection
-conn = psycopg.connect(f"postgresql://{app_config.postgres_user}:{app_config.postgres_password}@localhost:5432/{app_config.postgres_db}", autocommit = True)
+conn = psycopg.connect(f"postgresql://{app_config.postgres_user}:{app_config.postgres_password}@postgres_db:5432/{app_config.postgres_db}", autocommit = True)
 
 # Initialize Checkpointer
 checkpointer = PostgresSaver(conn = conn)

@@ -12,8 +12,11 @@ def chat()-> None:
     codebase_knowledge()
 
     for message in st.session_state["previous_session_messages"]:
-        with st.chat_message(name = message["role"]):
-            st.markdown(message["content"], unsafe_allow_html = True)
+        if message["content"]:
+            with st.chat_message(name = message["role"]):
+                st.markdown(message["content"], unsafe_allow_html = True)
+        else:
+            st.status(label = "Using retrieval tool", state = "complete")
 
     for message in st.session_state["messages"]:
         with st.chat_message(name = message["role"]):
@@ -25,7 +28,7 @@ def chat()-> None:
             st.markdown(query, unsafe_allow_html = True)
         with st.spinner("Generating response..."):
             response = requests.post(
-                        url = "http://localhost:8000/respond",
+                        url = f"{st.session_state['backend_url']}/respond",
                         json = {
                             "query": query,
                             "session_id": st.session_state["session_id"]
@@ -34,23 +37,23 @@ def chat()-> None:
         if response.status_code != 200:
             st.error("Error fetching response. Please try again later.")
         else:
-            response_msg = response.json()["response"]
+            response_messages = response.json()["response"]
             st.session_state["messages"].extend(
                 [
                     {"role": "human", "content": query},
-                    {"role": "assistant", "content": response_msg}
+                    {"role": "assistant", "content": response_messages[-1]["content"]}
                 ]
             )
+                
             with st.chat_message("assistant"):
                 placeholder = st.empty()
 
                 streamed_text = ""
-
-                for chunk in response_msg.split(" "):
+            
+                for chunk in response_messages[-1]["content"].split(" "):
                     streamed_text += chunk + " "
-                    placeholder.markdown(streamed_text, unsafe_allow_html = True)  # live update
+                    placeholder.markdown(streamed_text, unsafe_allow_html = True)
                     time.sleep(0.03)
-               
 
             
 
