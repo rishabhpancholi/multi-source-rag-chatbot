@@ -23,7 +23,7 @@ services:
 
   agentic-rag-chatbot:
     container_name: agentic-rag-chatbot
-    build: .
+    image: rishabhpancholi/agentic-rag-chatbot:latest
     ports:
       - "8000:8000"
     env_file:

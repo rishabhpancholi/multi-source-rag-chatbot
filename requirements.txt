@@ -20,3 +20,5 @@ python-multipart==0.0.20
 qdrant-client==1.16.1
 
 uvicorn==0.38.0
+
+streamlit==1.52.1

@@ -14,15 +14,15 @@ from api.routes import (
 app = FastAPI()
 
 # Include routes
-routes = [
+routers = [
     home_router,
     response_router,
     history_router,
     knowledge_router,
     codebase_knowledge_router
 ]
-for route in routes:
-    app.include_router(route)
+for router in routers:
+    app.include_router(router)
 
 # Enable CORS
 app.add_middleware(

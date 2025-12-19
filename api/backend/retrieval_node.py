@@ -25,8 +25,7 @@ def retrieval_tool(query: str, session_id: str) -> str:
         vector_store = QdrantVectorStore.from_existing_collection(
             embedding = embeddings,
             collection_name = session_id,
-            url = app_config.qdrant_url,
-            api_key = app_config.qdrant_api_key
+            url = app_config.qdrant_url
         )
 
         relevant_docs = vector_store.similarity_search(query, k = 5)

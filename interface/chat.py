@@ -1,4 +1,5 @@
 # Imports
+import json
 import time
 import requests
 import streamlit as st
@@ -27,33 +28,50 @@ def chat()-> None:
         with st.chat_message(name = "human"):
             st.markdown(query, unsafe_allow_html = True)
         with st.spinner("Generating response..."):
-            response = requests.post(
+            response_stream = requests.post(
                         url = f"{st.session_state['backend_url']}/respond",
                         json = {
                             "query": query,
                             "session_id": st.session_state["session_id"]
                         }
                 )
-        if response.status_code != 200:
+        if response_stream.status_code != 200:
             st.error("Error fetching response. Please try again later.")
         else:
-            response_messages = response.json()["response"]
-            st.session_state["messages"].extend(
-                [
-                    {"role": "human", "content": query},
-                    {"role": "assistant", "content": response_messages[-1]["content"]}
-                ]
-            )
+            for raw_json in response_stream.iter_lines(decode_unicode = True):
+                if not raw_json:
+                    continue
                 
-            with st.chat_message("assistant"):
-                placeholder = st.empty()
+                try:
+                    message = json.loads(raw_json)
+                except json.JSONDecodeError:
+                    continue
 
-                streamed_text = ""
-            
-                for chunk in response_messages[-1]["content"].split(" "):
-                    streamed_text += chunk + " "
-                    placeholder.markdown(streamed_text, unsafe_allow_html = True)
-                    time.sleep(0.03)
+                tool_status_placeholder = st.empty()
+
+                if message["type"] == "tool_call":
+                    tool_status_placeholder.status(label = f"{message["message"]}", state = "complete")
+                    time.sleep(0.1)
+                if message["type"] == "tool_call_completed":
+                    tool_status_placeholder.status(f"{message["message"]}", state = "complete")
+                    time.sleep(0.1)
+                if message["type"] == "response":
+
+                    st.session_state["messages"].extend(
+                        [
+                            {"role": "human", "content": query},
+                            {"role": "assistant", "content": message["message"]}
+                        ]
+                    )
+                
+                    with st.chat_message("assistant"):
+                        placeholder = st.empty()
+                        streamed_text = ""
+                    
+                        for chunk in message["message"].split(" "):
+                            streamed_text += chunk + " "
+                            placeholder.markdown(streamed_text, unsafe_allow_html = True)
+                            time.sleep(0.03)
 
             
 
