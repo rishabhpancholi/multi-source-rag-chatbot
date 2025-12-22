@@ -1,8 +1,8 @@
 # Imports
 from fastapi.responses import JSONResponse
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Path
 
-from langchain_core.messages import HumanMessage,AIMessage
+from langchain_core.messages import HumanMessage, AIMessage
 
 from api.backend import chatbot
 
@@ -11,7 +11,7 @@ history_router = APIRouter()
 
 # Chat history route
 @history_router.get("/history/{session_id}")
-def get_history(session_id: str)-> JSONResponse:
+def get_history(session_id: str = Path(...))-> JSONResponse:
     try:
         config = {
             "configurable": {

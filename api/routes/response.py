@@ -1,7 +1,9 @@
 # Imports
 import json
 
-from pydantic import BaseModel
+from typing import Annotated
+
+from pydantic import BaseModel, Field
 
 from langsmith import tracing_context
 
@@ -15,7 +17,7 @@ from api.backend import chatbot,langsmith_client
 # Input model
 class ChatInput(BaseModel):
     query: str
-    session_id: str
+    session_id: Annotated[str, Field(default = "default")]
 
 # Initialize router
 response_router = APIRouter()

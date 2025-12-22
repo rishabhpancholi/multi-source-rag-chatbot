@@ -13,7 +13,7 @@ from langchain_community.document_loaders import (
 )
 from langchain_core.runnables import RunnableLambda
 
-from api.backend import create_knowledge,langsmith_client
+from api.backend import create_knowledge, langsmith_client
 
 # Initialize router
 knowledge_router = APIRouter()

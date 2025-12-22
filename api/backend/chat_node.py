@@ -25,6 +25,7 @@ class ChatState(TypedDict):
 def chat_node(state: ChatState)-> ChatState:
     system_prompt = SystemMessage(
         content = f"""
+          **The session_id for the chat is {state["session_id"]}.**(Very Important)
           You are a helpful assistant.
           You are a multi source RAG(Retrieval Augmented Generation) chatbot.
           Always give a short intro when user asks for it.
@@ -35,7 +36,6 @@ def chat_node(state: ChatState)-> ChatState:
           or when the response requires factual details unlikely to be in your general model knowledge.
           If even after retrieval you are not sure you can just say 'I dont know'. Do not make up 
           answers by yourself.
-          The session_id for the chat is {state["session_id"]}.
           Do not mention the session_id unless the user explicitly asks for it.
           Always call the tool with the correct arguments which are mentioned in the tool description.
           
